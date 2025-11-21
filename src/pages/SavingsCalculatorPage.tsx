@@ -11,6 +11,7 @@ import {
   Tab,
   TextField,
 } from 'tosslib';
+import { addCommas } from 'utils/numberUtils';
 
 export function SavingsCalculatorPage() {
   const {
@@ -67,7 +68,7 @@ export function SavingsCalculatorPage() {
                 topProps={{ fontSize: 16, fontWeight: 'bold', color: colors.grey900 }}
                 middle={`연 이자율: ${annualRate}`}
                 middleProps={{ fontSize: 14, color: colors.blue600, fontWeight: 'medium' }}
-                bottom={`${minMonthlyAmount}원 ~ ${maxMonthlyAmount}원 | ${availableTerms}개월`} // todo : 숫자에 자릿수 표시
+                bottom={`${addCommas(minMonthlyAmount)}원 ~ ${addCommas(maxMonthlyAmount)}원 | ${availableTerms}개월`}
                 bottomProps={{ fontSize: 13, color: colors.grey600 }}
               />
             }
