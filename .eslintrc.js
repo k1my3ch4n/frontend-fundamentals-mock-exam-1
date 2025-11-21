@@ -24,7 +24,15 @@ module.exports = {
   settings: { react: { version: 'detect' } },
 
   rules: {
-    'prettier/prettier': 'error',
+    'prettier/prettier': [
+      'error',
+      {
+        singleQuote: true,
+        trailingComma: 'all',
+        printWidth: 120,
+      },
+    ],
+
     'no-implicit-coercion': 'error',
 
     'no-undef': 'off',
