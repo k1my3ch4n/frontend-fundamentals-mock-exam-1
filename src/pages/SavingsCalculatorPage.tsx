@@ -1,5 +1,5 @@
 import useGetProductList from 'apis/useGetProductList';
-import { useState } from 'react';
+import useSavingsForm from 'hooks/useSavingsForm';
 import {
   Assets,
   Border,
@@ -14,18 +14,21 @@ import {
 } from 'tosslib';
 import { addCommas } from 'utils/numberUtils';
 
-type AvailableTerm = 6 | 12 | 24;
-
-const AVAILABLE_TERMS: Record<string, AvailableTerm> = {
+const AVAILABLE_TERMS = {
   six: 6,
   twelve: 12,
   twentyFour: 24,
-};
+} as const;
 
 export function SavingsCalculatorPage() {
-  const [targetAmount, setTargetAmount] = useState<string>('');
-  const [monthAmount, setMonthAmount] = useState<string>('');
-  const [availableTerm, setAvailableTerm] = useState<AvailableTerm>(12);
+  const {
+    targetAmount,
+    monthAmount,
+    availableTerm,
+    handleTargetAmountChange,
+    handleMonthAmountChange,
+    handleAvailableTermChange,
+  } = useSavingsForm();
 
   const {
     // isLoading,
@@ -46,7 +49,7 @@ export function SavingsCalculatorPage() {
         placeholder="목표 금액을 입력하세요"
         suffix="원"
         value={targetAmount}
-        onChange={e => setTargetAmount(e.target.value.replace(/\D/g, ''))}
+        onChange={e => handleTargetAmountChange(e.target.value)}
       />
       <Spacing size={16} />
       <TextField
@@ -54,14 +57,14 @@ export function SavingsCalculatorPage() {
         placeholder="희망 월 납입액을 입력하세요"
         suffix="원"
         value={monthAmount}
-        onChange={e => setMonthAmount(e.target.value.replace(/\D/g, ''))}
+        onChange={e => handleMonthAmountChange(e.target.value)}
       />
       <Spacing size={16} />
       <SelectBottomSheet
         label="저축 기간"
         title="저축 기간을 선택해주세요"
         value={availableTerm}
-        onChange={value => setAvailableTerm(value)}
+        onChange={handleAvailableTermChange}
       >
         <SelectBottomSheet.Option value={AVAILABLE_TERMS.six}>6개월</SelectBottomSheet.Option>
         <SelectBottomSheet.Option value={AVAILABLE_TERMS.twelve}>12개월</SelectBottomSheet.Option>
