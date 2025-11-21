@@ -1,4 +1,5 @@
 import useGetProductList from 'apis/useGetProductList';
+import { useState } from 'react';
 import {
   Assets,
   Border,
@@ -13,7 +14,19 @@ import {
 } from 'tosslib';
 import { addCommas } from 'utils/numberUtils';
 
+type AvailableTerm = 6 | 12 | 24;
+
+const AVAILABLE_TERMS: Record<string, AvailableTerm> = {
+  six: 6,
+  twelve: 12,
+  twentyFour: 24,
+};
+
 export function SavingsCalculatorPage() {
+  const [targetAmount, setTargetAmount] = useState<string>('');
+  const [monthAmount, setMonthAmount] = useState<string>('');
+  const [availableTerm, setAvailableTerm] = useState<AvailableTerm>(12);
+
   const {
     // isLoading,
     // isError,
@@ -28,14 +41,31 @@ export function SavingsCalculatorPage() {
 
       <Spacing size={16} />
 
-      <TextField label="목표 금액" placeholder="목표 금액을 입력하세요" suffix="원" />
+      <TextField
+        label="목표 금액"
+        placeholder="목표 금액을 입력하세요"
+        suffix="원"
+        value={targetAmount}
+        onChange={e => setTargetAmount(e.target.value.replace(/\D/g, ''))}
+      />
       <Spacing size={16} />
-      <TextField label="월 납입액" placeholder="희망 월 납입액을 입력하세요" suffix="원" />
+      <TextField
+        label="월 납입액"
+        placeholder="희망 월 납입액을 입력하세요"
+        suffix="원"
+        value={monthAmount}
+        onChange={e => setMonthAmount(e.target.value.replace(/\D/g, ''))}
+      />
       <Spacing size={16} />
-      <SelectBottomSheet label="저축 기간" title="저축 기간을 선택해주세요" value={12} onChange={() => {}}>
-        <SelectBottomSheet.Option value={6}>6개월</SelectBottomSheet.Option>
-        <SelectBottomSheet.Option value={12}>12개월</SelectBottomSheet.Option>
-        <SelectBottomSheet.Option value={24}>24개월</SelectBottomSheet.Option>
+      <SelectBottomSheet
+        label="저축 기간"
+        title="저축 기간을 선택해주세요"
+        value={availableTerm}
+        onChange={value => setAvailableTerm(value)}
+      >
+        <SelectBottomSheet.Option value={AVAILABLE_TERMS.six}>6개월</SelectBottomSheet.Option>
+        <SelectBottomSheet.Option value={AVAILABLE_TERMS.twelve}>12개월</SelectBottomSheet.Option>
+        <SelectBottomSheet.Option value={AVAILABLE_TERMS.twentyFour}>24개월</SelectBottomSheet.Option>
       </SelectBottomSheet>
 
       <Spacing size={24} />
