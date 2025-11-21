@@ -11,10 +11,15 @@ interface SavingsProduct {
 }
 
 const useGetProductList = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
   const [productList, setProductList] = useState<SavingsProduct[]>([]);
 
   useEffect(() => {
     const fetchProductList = async () => {
+      setIsLoading(true);
+      setIsError(false);
+
       try {
         const response = await http.get<SavingsProduct[]>('/api/savings-products');
 
@@ -24,16 +29,20 @@ const useGetProductList = () => {
 
         setProductList(response);
       } catch (e) {
+        setIsError(true);
+
         if (isHttpError(e)) {
           console.log(e.message);
         }
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchProductList();
   }, []);
 
-  return { productList };
+  return { productList, isLoading, isError };
 };
 
 export default useGetProductList;
