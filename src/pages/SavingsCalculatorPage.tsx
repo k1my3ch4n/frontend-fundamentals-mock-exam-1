@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import useGetProductList from 'apis/useGetProductList';
 import useSavingsForm from 'hooks/useSavingsForm';
 import {
@@ -23,6 +23,12 @@ const AVAILABLE_TERMS = {
 } as const;
 
 export function SavingsCalculatorPage() {
+  const [selectedProductId, setSelectedProductId] = useState<string>('');
+
+  const handleSelectProduct = (productId: string) => {
+    setSelectedProductId(productId);
+  };
+
   const {
     targetAmount,
     monthAmount,
@@ -113,8 +119,8 @@ export function SavingsCalculatorPage() {
               bottomProps={{ fontSize: 13, color: colors.grey600 }}
             />
           }
-          // right={<Assets.Icon name="icon-check-circle-green" />}
-          onClick={() => {}}
+          right={selectedProductId === id && <Assets.Icon name="icon-check-circle-green" />}
+          onClick={() => handleSelectProduct(id)}
         />
       ))}
 
