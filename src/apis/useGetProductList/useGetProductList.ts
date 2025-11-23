@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { http, isHttpError } from 'tosslib';
 
-interface SavingsProduct {
+export interface SavingsProduct {
   id: string;
   name: string;
   annualRate: number;
