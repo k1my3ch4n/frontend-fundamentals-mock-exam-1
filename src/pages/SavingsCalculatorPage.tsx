@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import useGetProductList from 'apis/useGetProductList';
 import useSavingsForm from 'hooks/useSavingsForm';
 import {
@@ -13,6 +14,7 @@ import {
   TextField,
 } from 'tosslib';
 import { addCommas } from 'utils/numberUtils';
+import useDebounce from 'hooks/useDebounce';
 
 const AVAILABLE_TERMS = {
   six: 6,
@@ -36,7 +38,20 @@ export function SavingsCalculatorPage() {
     productList,
   } = useGetProductList();
 
-  console.log(productList);
+  const debouncedMonthAmount = useDebounce(monthAmount, 500);
+
+  const filteredProducts = useMemo(() => {
+    const amount = Number(debouncedMonthAmount);
+
+    if (!amount || amount === 0) {
+      return productList;
+    }
+
+    return productList.filter(
+      ({ minMonthlyAmount, maxMonthlyAmount, availableTerms }) =>
+        amount >= minMonthlyAmount && amount <= maxMonthlyAmount && availableTerms === availableTerm
+    );
+  }, [debouncedMonthAmount, productList, availableTerm]);
 
   return (
     <>
@@ -84,32 +99,24 @@ export function SavingsCalculatorPage() {
         </Tab.Item>
       </Tab>
 
-      {productList.map(
-        ({
-          // id,
-          name,
-          annualRate,
-          minMonthlyAmount,
-          maxMonthlyAmount,
-          availableTerms,
-        }) => (
-          <ListRow
-            contents={
-              <ListRow.Texts
-                type="3RowTypeA"
-                top={name}
-                topProps={{ fontSize: 16, fontWeight: 'bold', color: colors.grey900 }}
-                middle={`연 이자율: ${annualRate}`}
-                middleProps={{ fontSize: 14, color: colors.blue600, fontWeight: 'medium' }}
-                bottom={`${addCommas(minMonthlyAmount)}원 ~ ${addCommas(maxMonthlyAmount)}원 | ${availableTerms}개월`}
-                bottomProps={{ fontSize: 13, color: colors.grey600 }}
-              />
-            }
-            // right={<Assets.Icon name="icon-check-circle-green" />}
-            onClick={() => {}}
-          />
-        )
-      )}
+      {filteredProducts.map(({ id, name, annualRate, minMonthlyAmount, maxMonthlyAmount, availableTerms }) => (
+        <ListRow
+          key={id}
+          contents={
+            <ListRow.Texts
+              type="3RowTypeA"
+              top={name}
+              topProps={{ fontSize: 16, fontWeight: 'bold', color: colors.grey900 }}
+              middle={`연 이자율: ${annualRate}`}
+              middleProps={{ fontSize: 14, color: colors.blue600, fontWeight: 'medium' }}
+              bottom={`${addCommas(minMonthlyAmount)}원 ~ ${addCommas(maxMonthlyAmount)}원 | ${availableTerms}개월`}
+              bottomProps={{ fontSize: 13, color: colors.grey600 }}
+            />
+          }
+          // right={<Assets.Icon name="icon-check-circle-green" />}
+          onClick={() => {}}
+        />
+      ))}
 
       {/* 아래는 계산 결과 탭 내용이에요. 계산 결과 탭을 구현할 때 주석을 해제해주세요. */}
       {/* <Spacing size={8} />
